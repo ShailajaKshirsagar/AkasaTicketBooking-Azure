@@ -7,25 +7,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - run: mvn clean package -Dspring.profiles.active=ci
+      - name: Build with maven
+        run: mvn clean package -Dspring.profiles.active=ci
 
-      - uses: docker/login-action@v3
+      - name: Login to Docker
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
 
-      - name: Push image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
+      - name: Push to Docker
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
+
