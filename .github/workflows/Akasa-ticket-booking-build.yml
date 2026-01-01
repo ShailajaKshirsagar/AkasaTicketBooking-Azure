@@ -1,8 +1,8 @@
-name: Akasa Ticket Booking App
+name: Akasa Ticket Booking App CI/CD
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master"]   # secrets only available on push
 
 jobs:
   build:
@@ -31,14 +31,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 5️⃣ Debug Docker secret (optional)
+      # 5️⃣ Optional debug: confirm secrets
       - name: Debug Docker secret
         run: |
-          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
-            echo "❌ DOCKERHUB_USERNAME is EMPTY"
-          else
-            echo "✅ DOCKERHUB_USERNAME is SET"
-          fi
+          echo "DOCKERHUB_USERNAME is: ${{ secrets.DOCKERHUB_USERNAME }}"
+          echo "DOCKERHUB_TOKEN is set: ${#DOCKERHUB_TOKEN}"  
 
       # 6️⃣ Build Docker image
       - name: Build Docker image
