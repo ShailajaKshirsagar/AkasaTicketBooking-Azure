@@ -1,4 +1,4 @@
-name: Akasa ticket booking app
+name: Akasa Ticket Booking App
 
 on:
   push:
@@ -9,27 +9,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Set up Java 17
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with maven
+      # 3️⃣ Build Maven project
+      - name: Build with Maven
         run: mvn clean package -Dspring.profiles.active=ci
 
-      - name: Login to Docker
+      # 4️⃣ Login to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
+      # 5️⃣ Debug secrets (optional, safe)
+      - name: Debug Docker secret
+        run: |
+          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            echo "DOCKERHUB_USERNAME is EMPTY"
+          else
+            echo "DOCKERHUB_USERNAME is SET"
+          fi
 
-      - name: Push to Docker
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
+      # 6️⃣ Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
 
+      # 7️⃣ Push Docker image
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
