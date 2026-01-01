@@ -42,10 +42,8 @@ jobs:
 
       # 6️⃣ Build Docker image
       - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest .
 
       # 7️⃣ Push Docker image
       - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/akasa-ticket-booking:latest
